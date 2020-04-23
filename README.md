@@ -1,0 +1,1 @@
+自用的reposity，对官方的repo中，某些不满足要求的ebuild进行一定程度的修改
