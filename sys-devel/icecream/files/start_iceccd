@@ -1,0 +1,27 @@
+#!/bin/bash
+
+set -a
+source /etc/conf.d/icecream
+set +a
+
+basedir=${ICECREAM_BASEDIR:+-b ${ICECREAM_BASEDIR}}
+netname=${ICECREAM_NETNAME:+-n ${ICECREAM_NETNAME}}
+logfile=${ICECREAM_LOG_FILE:+-l ${ICECREAM_LOG_FILE}}
+scheduler=${ICECREAM_SCHEDULER_HOST:+-s ${ICECREAM_SCHEDULER_HOST}}
+user=${ICECREAM_USER:+-u ${ICECREAM_USER}}
+verbosity=${ICECREAM_VERBOSITY:-"-vvv"}
+
+[ "$ICECREAM_MAX_JOBS" == "0" ] && maxjobs="-m 1 --no-remote" || {
+	[ -n "$ICECREAM_MAX_JOBS" ] && maxjobs="-m $ICECREAM_MAX_JOBS"
+	}
+
+[ "$ICECREAM_ALLOW_REMOTE" == "no" ] && remote="--no-remote"
+
+[[ ! -d /var/log/icecream/ ]] && mkdir -p /var/log/icecream/
+chown -R ${ICECREAM_USER} /var/log/icecream/
+
+[[ ! -d "$ICECREAM_BASEDIR" ]] && mkdir -p $ICECREAM_BASEDIR 
+chown -R ${ICECREAM_USER} $ICECREAM_BASEDIR
+
+exec /usr/sbin/iceccd $basedir $netname $logfile $scheduler $maxjobs $user $verbosity $remote
+

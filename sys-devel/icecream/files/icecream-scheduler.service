@@ -1,0 +1,11 @@
+[Unit]
+Description=Icecream distributed compiler scheduler
+
+[Service]
+#Type=simple
+SyslogIdentifier=icecc-scheduler
+#EnvironmentFile=-/etc/conf.d/icecream
+ExecStart=/usr/libexec/icecc/start_icecc-scheduler
+
+[Install]
+WantedBy=multi-user.target

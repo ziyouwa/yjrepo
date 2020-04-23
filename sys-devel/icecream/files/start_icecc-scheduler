@@ -1,0 +1,22 @@
+#!/bin/bash
+
+set -a
+source /etc/conf.d/icecream
+set +a
+
+interface=${ICECREAM_SCHEDULER_INTERFACE:+--interface ${ICECREAM_SCHEDULER_INTERFACE}}
+netname=${ICECREAM_NETNAME:+-n ${ICECREAM_NETNAME}}
+logfile=${ICECREAM_SCHEDULER_LOG_FILE:+-l ${ICECREAM_SCHEDULER_LOG_FILE}}
+port=${ICECREAM_SCHEDULER_PORT:+-s ${ICECREAM_SCHEDULER_PORT}}
+user=${ICECREAM_USER:+-u ${ICECREAM_USER}}
+verbosity=${ICECREAM_VERBOSITY:-"-vvv"}
+keep=${ICECREAM_SCHEDULER_KEEP:+"-r"}
+
+[[ ! -d /var/log/icecream/ ]] && mkdir -p /var/log/icecream/
+chown -R ${ICECREAM_USER} /var/log/icecream/
+
+[[ ! -d "$ICECREAM_BASEDIR" ]] && mkdir -p $ICECREAM_BASEDIR 
+chown -R ${ICECREAM_USER} $ICECREAM_BASEDIR
+
+exec /usr/sbin/icecc-scheduler $interface $netname $logfile $port $user $verbosity $keep
+
